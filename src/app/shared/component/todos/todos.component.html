@@ -9,8 +9,8 @@
                     <label for="todoItem">TodoItem</label>
                     <input type="text" class="form-control" #TodoItem placeholder="TodoItem" id="todoId">
                 </div>
-                <button (click)="onAddTodo(TodoItem)"  class="btn btn-block btn-success">AddTodo</button>
-                <!-- <button class="btn btn-block btn-success">AddTodo</button> -->
+                <button *ngIf="!isInEditMode"  (click)="onAddTodo(TodoItem)"  class="btn btn-block btn-success">AddTodo</button>
+                <button   *ngIf="isInEditMode"  (click)="onUpdate()" class="btn btn-block btn-success">UpdateTodo</button>
             </div>
          </div>
     </div>
@@ -20,7 +20,7 @@
                 <strong>{{todo.todoItem}}</strong>
 
                  <div>
-                <button class="btn btn-sm btn-outline-primary mr-2">edit</button>
+                <button (click)="onEdit(todo)"   class="btn btn-sm btn-outline-primary mr-2">edit</button>
                 <button (click)="onRemove(todo.todoId)" class="btn btn-sm btn-outline-danger">Remove</button>
                 </div>
           
@@ -28,26 +28,10 @@
            
         </ul>
           <ng-template #notodos>
-               <p class="alert alert-info">NoTodos</p>
+               <p class="alert alert-info">No Todos Available</p>
             </ng-template>
     </div>
 </div>
 
 
-
-<div class="row mt-4">
-    <div class="col-md-4">
-         <div class="card">
-  <div class="card-body bg-dark">
-      <div class="d-flex">
-        <button [disabled]="count>=5" (click)="onAddCount()" mat-fab color="primary" class="space" >ADD</button>
-        <button [disabled]="count===0"(click)="onDeleteCount()" mat-fab color="warn" class="space">DELETE</button>
-        </div>
-        <p class="alert alert-danger">
-            <mat-icon color="warn">add_shopping_cart</mat-icon>Shopping Bag :{{count}}
-        </p>
-  </div>
-</div> 
-    </div>
-</div>
 

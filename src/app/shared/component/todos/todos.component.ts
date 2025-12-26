@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Itodos } from '../../models/todos';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 
@@ -10,42 +11,74 @@ import { Itodos } from '../../models/todos';
    
 })
 export class TodosComponent implements OnInit {
-count:number=0;
-  onAddCount(){
-    if(this.count <5){
-       this.count++    
-    }
-  }
-  onDeleteCount(){
- if(this.count >0){
-       this.count--   
-    }
-  }
 
 
-@ViewChild('TodoItem') todoItemRef! : ElementRef;
+
+@ViewChild('TodoItem') todoItem! : ElementRef;
 
    todosArr: Array<Itodos>=[
     {
     todoItem:"Angular",
-    todoId:"123"
+    todoId:"123",
+  
    },
     {
     todoItem:"RxJs",
     todoId:"1234"
    }
   ]
-  constructor() { }
+  isInEditMode:boolean=false
+  editId!:string
+  constructor(private _snackbar : MatSnackBar) {}
 
   ngOnInit(): void {
   }
+
+  openSnackbar(){
+      
+  }
+
 onAddTodo(todoItemControl : HTMLInputElement){
-  let todoObj:Itodos={
+  if(this.todoItem.nativeElement.value.length>0){
+   let todoObj:Itodos={
     todoItem: todoItemControl.value,
     todoId: this.uuid()
   }
   todoItemControl.value=''
   this.todosArr.unshift(todoObj)
+
+   this._snackbar.open(`The todo Item Add successfully` , "close" ,{
+    horizontalPosition:'center',
+    verticalPosition:'top',
+    duration:2000
+  })
+  }
+  
+}
+
+onEdit(todo:Itodos){
+  this.editId=todo.todoId
+  this.todoItem.nativeElement.value = todo.todoItem
+this.isInEditMode=true
+ 
+
+}
+
+onUpdate(){
+  let UPDATED_OBJ : Itodos={
+       todoItem:this.todoItem.nativeElement.value,
+       todoId:this.editId
+  }
+this.todoItem.nativeElement.value=''
+let GET_INDEX=this.todosArr.findIndex(t=>t.todoId === this.editId)
+this.todosArr[GET_INDEX]=UPDATED_OBJ
+this.isInEditMode= false
+
+  this._snackbar.open(`The todo Item Updated successfully` , "close" ,{
+    horizontalPosition:'center',
+    verticalPosition:'top',
+    duration:2000
+  })
 }
 
 uuid = () => {
@@ -58,13 +91,18 @@ uuid = () => {
     });
 };
 
+
+
 onRemove(todoId:string){
-  const isConfirm = confirm('Are you sure, you want to remove  from list ?');
-  if(isConfirm){
- let REMOVE_ID = todoId;
-  let GET_INDEX =this.todosArr.findIndex(todo=>todo.todoId=== REMOVE_ID);
+  let GET_INDEX =this.todosArr.findIndex(todo=>todo.todoId=== todoId);
   this.todosArr.splice(GET_INDEX,1)
-  }
- 
+     this._snackbar.open(`The todo with id ${todoId} removed successfully` , "close" ,{
+    horizontalPosition:'center',
+    verticalPosition:'top',
+    duration:2000
+  })
+  
 }
+
+
 }
